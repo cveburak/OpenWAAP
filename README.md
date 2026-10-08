@@ -59,8 +59,6 @@ Trafiğini üçüncü parti bir bulut proxy'sine yönlendirmeden, **kendi VDS'in
 | **Hardening** | HSTS, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, CSP başlıkları; edge son yazar olduğu için origin bunları zayıflatamaz |
 | **Operasyon** | `-validate` ve `-backup` CLI komutları, graceful shutdown (10 sn drain), fail-open / fail-closed seçeneği |
 
-> Faz faz geliştirme geçmişi ve teknik gerekçeler için [`finish.md`](finish.md) dosyasına bakabilirsin.
-
 ---
 
 ## 🏗️ Mimari
