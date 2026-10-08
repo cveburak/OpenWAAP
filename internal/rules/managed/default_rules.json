@@ -1,0 +1,30 @@
+[
+  {"id": "sqli-001", "category": "SQL_INJECTION", "description": "UNION-based SQL injection", "field": "ARG_VALUE", "pattern": "(?i)union[\\s]+(all[\\s]+)?select", "points": 80, "paranoia": 1, "enabled": true, "target_args": ["id", "q", "search"]},
+  {"id": "sqli-002", "category": "SQL_INJECTION", "description": "Classic boolean-based SQLi tautology", "field": "ARG_VALUE", "pattern": "(?i)(or|and)[\\s]+[0-9]+[\\s]*=[\\s]*[0-9]+", "points": 45, "paranoia": 1, "enabled": true},
+  {"id": "sqli-003", "category": "SQL_INJECTION", "description": "SQL comment-based injection", "field": "ARG_VALUE", "pattern": "(?i)(union|select|insert|update|delete|drop|alter|create)[\\s].*(--|-{1}|\\/\\*|#)", "points": 55, "paranoia": 1, "enabled": true},
+  {"id": "sqli-004", "category": "SQL_INJECTION", "description": "Stacked queries / semicolon injection", "field": "ARG_VALUE", "pattern": "(?i);[\\s]*(select|insert|update|delete|drop)\\b", "points": 50, "paranoia": 1, "enabled": true},
+  {"id": "sqli-005", "category": "SQL_INJECTION", "description": "quoted single-quote error injection", "field": "ARG_VALUE", "pattern": "(?i)('|%27)[\\s]*(or|and|select|union|waitfor)\\b", "points": 55, "paranoia": 1, "enabled": true},
+  {"id": "sqli-006", "category": "SQL_INJECTION", "description": "sleep/blind time function", "field": "ARG_VALUE", "pattern": "(?i)(sleep|benchmark|pg_sleep|waitfor[\\s]+delay)[\\s]*\\(", "points": 85, "paranoia": 1, "enabled": true},
+  {"id": "sqli-007", "category": "SQL_INJECTION", "description": "information_schema probing", "field": "ARG_VALUE", "pattern": "(?i)information_schema\\.", "points": 45, "paranoia": 1, "enabled": true},
+  {"id": "sqli-body-001", "category": "SQL_INJECTION", "description": "SQLi payload in request body", "field": "BODY", "pattern": "(?i)union[\\s]+(all[\\s]+)?select|('|%27)[\\s]*(or|and)[\\s]+1[\\s]*=[\\s]*1", "points": 70, "paranoia": 1, "enabled": true},
+
+  {"id": "xss-001", "category": "XSS", "description": "script tag injection", "field": "ARG_VALUE", "pattern": "(?i)<\\s*script[^>]*>.*?<\\s*/\\s*script\\s*>", "points": 85, "paranoia": 1, "enabled": true},
+  {"id": "xss-002", "category": "XSS", "description": "javascript protocol in attribute/URL", "field": "ARG_VALUE", "pattern": "(?i)(href|src|action)[\\s]*=[\\s]*[\\\"']?\\s*javascript:", "points": 75, "paranoia": 1, "enabled": true},
+  {"id": "xss-003", "category": "XSS", "description": "on-event attribute handlers", "field": "ARG_VALUE", "pattern": "(?i)\\son[a-z]+\\s*=\\s*([\\\"']|$)", "points": 55, "paranoia": 1, "enabled": true},
+  {"id": "xss-004", "category": "XSS", "description": "img onerror injection", "field": "ARG_VALUE", "pattern": "(?i)<\\s*img[^>]*onerror", "points": 80, "paranoia": 1, "enabled": true},
+  {"id": "xss-005", "category": "XSS", "description": "SVG/iframe payload", "field": "ARG_VALUE", "pattern": "(?i)<\\s*(svg|iframe|object|embed|math)[^>]*>", "points": 60, "paranoia": 1, "enabled": true},
+  {"id": "xss-006", "category": "XSS", "description": "encoded XSS obfuscation", "field": "ARG_VALUE", "pattern": "(?i)(&lt;|%3c|&#x3c)[\\s]*(script|svg|iframe|img)", "points": 55, "paranoia": 1, "enabled": true},
+  {"id": "xss-body-001", "category": "XSS", "description": "XSS payload in request body", "field": "BODY", "pattern": "(?i)<\\s*script[^>]*>.*?<\\s*/\\s*script\\s*>|<\\s*img[^>]*onerror|<\\s*svg[^>]*>", "points": 80, "paranoia": 1, "enabled": true},
+
+  {"id": "rce-001", "category": "RCE", "description": "shell command injection (semicolon/pipe)", "field": "ARG_VALUE", "pattern": "([|;&`])[\\s]*(id|whoami|cat\\b|nc\\b|python|wget|curl|bash|sh\\b|/bin/)\\b", "points": 85, "paranoia": 1, "enabled": true},
+  {"id": "rce-002", "category": "RCE", "description": "command substitution", "field": "ARG_VALUE", "pattern": "\\$\\s*\\([^)]*\\)", "points": 85, "paranoia": 1, "enabled": true},
+  {"id": "rce-003", "category": "RCE", "description": "backtick command execution", "field": "ARG_VALUE", "pattern": "`[^`]+(cat|id|ls|whoami|nc)[^`]*`", "points": 85, "paranoia": 1, "enabled": true},
+  {"id": "rce-004", "category": "RCE", "description": "PHP code execution markers", "field": "ARG_VALUE", "pattern": "(?i)(eval|system|exec|passthru|shell_exec|assert)\\s*\\(.*\\$.+\\s*\\)", "points": 80, "paranoia": 1, "enabled": true},
+  {"id": "rce-005", "category": "RCE", "description": "PHP open tag injection", "field": "ARG_VALUE", "pattern": "(?i)<?php", "points": 60, "paranoia": 1, "enabled": true},
+
+  {"id": "lfi-001", "category": "LFI", "description": "path traversal LFI /etc/passwd", "field": "ARG_VALUE", "pattern": "(?i)(\\.\\.\\/|\\.\\.\\\\|%2e%2e\\/)[^\\s]*(etc\\/passwd|etc\\/shadow|proc\\/self)", "points": 85, "paranoia": 1, "enabled": true},
+  {"id": "ptra-001", "category": "PATH_TRAVERSAL", "description": "generic path traversal", "field": "ARG_VALUE", "pattern": "(\\.\\.\\/|\\.\\.\\\\|%2e%2e%2f|%2e%2e\\\\|\\/\\/\\.\\.\\/)", "points": 45, "paranoia": 1, "enabled": true},
+  {"id": "ptra-002", "category": "PATH_TRAVERSAL", "description": "encoded traversal double-encoding", "field": "ARG_VALUE", "pattern": "(?i)%252e%252e|\\/\\\\.\\.\\.\\/", "points": 50, "paranoia": 1, "enabled": true},
+
+  {"id": "gen-001", "category": "RCE", "description": "suspicious web shells in path", "field": "URI", "pattern": "(?i)(shell|cmd|webshell|eval\\.php|c99|r57)[\\w\\-\\.]*(php|jsp|aspx)", "points": 85, "paranoia": 1, "enabled": true}
+]

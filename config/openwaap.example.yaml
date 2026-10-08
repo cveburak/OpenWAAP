@@ -1,0 +1,153 @@
+version: "1"
+
+server:
+  listen_https: ":443"
+  listen_http: ":80"
+  tls_cert_file: "certs/fullchain.pem"
+  tls_key_file: "certs/privkey.pem"
+
+security:
+  engine_fail_mode: fail_open
+  hmac_secret: ${WAAP_HMAC_SECRET}
+
+  challenge:
+    enabled: false
+    difficulty: 4
+    ttl: 10m
+    proof_ttl: 3m
+
+  geoip:
+    enabled: false
+
+  siem:
+    enabled: false
+    batch_interval: 2s
+    batch_size: 100
+    max_buffer: 8192
+    endpoints:
+
+  store:
+    type: memory
+
+  ddos:
+    enabled: true
+    per_ip_rate: 50
+    per_ip_action: challenge
+    site_burst_rps: 0
+    defense_action: challenge
+    defense_ttl: 1m
+    allowlist:
+
+  headers:
+    hsts: true
+    frame_options: SAMEORIGIN
+    no_sniff: true
+    referrer_policy: strict-origin-when-cross-origin
+    csp: ""
+
+log:
+  rotation_max_mb: 0
+  rotation_keep: 5
+
+setup_pending: false
+
+dashboard:
+  enabled: false
+  listen: "127.0.0.1:8443"
+  console_path: "/-"
+  session_ttl: 12h
+  max_events: 10000
+
+domains:
+  - hostname: example.com
+    origin:
+      scheme: http
+      host: 127.0.0.1
+      port: "8080"
+    waf:
+      mode: block
+      managed:
+        ruleset_version: "1.0.0"
+        paranoia_level: 1
+        categories:
+          SQL_INJECTION: true
+          XSS: true
+          RCE: true
+          LFI: true
+          PATH_TRAVERSAL: true
+      custom_rules:
+        - id: block-admin-abroad
+          name: Block /admin outside TR
+          enabled: true
+          dsl: 'IF path starts_with "/admin" AND country != "TR" THEN BLOCK'
+        - id: challenge-low-bot
+          name: Challenge low bot score on login
+          enabled: true
+          dsl: 'IF path == "/login" AND bot_score < 20 THEN CHALLENGE'
+    honeypot:
+      enabled: true
+      paths:
+        - /internal/debug
+      auto_generate: true
+
+
+    rate_limits:
+      enabled: true
+      limits:
+        - id: login-rate
+          name: Login attempt throttle
+          enabled: true
+          scope: ip_path
+          path: /login
+          max: 10
+          throttle_max: 40
+          window: 60s
+          action: BLOCK
+        - id: api-key-rate
+          name: Per API key calls
+          enabled: true
+          scope: header
+          header: x-api-key
+          max: 100
+          window: 60s
+          action: RATE_LIMIT
+
+    bot:
+      enabled: true
+      challenge_below: 20
+      block_below: 5
+      verified_bots:
+        - googlebot
+        - bingbot
+
+    reputation:
+      enabled: true
+      honeypot_points: 50
+      blocked_request_points: 25
+      block_score: 60
+
+    api_security:
+      enabled: true
+      jwt:
+        algorithm: HS256
+        secret: ${WAAP_JWT_SECRET}
+        issuer: openwaap-example
+        audiences:
+          - api.example.com
+        leeway_seconds: 30
+      routes:
+        - path: /api/v1/orders
+          method: POST
+          request_schema: '{"type":"object","properties":{"qty":{"type":"integer","minimum":1}},"required":["qty"]}'
+        - path: /api/v1/health
+          auth_none: true
+      policy:
+        authn_required: true
+        validate_schema: true
+
+    behavior:
+      enabled: true
+      secret: ${WAAP_BEHAVIOR_SECRET}
+      cookie_ttl: 24h
+      challenge_above: 60
+      block_above: 85
