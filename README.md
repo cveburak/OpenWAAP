@@ -630,20 +630,6 @@ Evet, [MIT Lisansı](LICENSE) kapsamındadır.
 
 ---
 
-## 🤝 Katkıda Bulunma
-
-Pull request ve issue'lar memnuniyetle karşılanır.
-
-1. Depoyu fork'la
-2. Özellik dalı oluştur: `git checkout -b feature/harika-ozellik`
-3. Commit'le: `git commit -m 'feat: harika özellik eklendi'`
-4. Push'la: `git push origin feature/harika-ozellik`
-5. Pull Request aç
-
-Göndermeden önce `go build ./... && go vet ./... && go test ./...` komutlarının hatasız geçtiğinden emin ol.
-
----
-
 ## 📄 Lisans
 
 Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır. Ticari ve kişisel projelerde özgürce kullanabilirsin.
